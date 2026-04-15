@@ -1,0 +1,30 @@
+name: Pterodactyl Deploy
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Build Project
+        run: |
+          npm install
+          npm run build
+
+      - name: Sync to Pterodactyl via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.SFTP_HOST }} # عنوان السيرفر
+          username: ${{ secrets.SFTP_USER }} # اسم مستخدم SFTP من اللوحة
+          password: ${{ secrets.SFTP_PASS }} # كلمة السر
+          port: ${{ secrets.SFTP_PORT }}
+          local_path: './*' 
+          remote_path: '/home/container'
