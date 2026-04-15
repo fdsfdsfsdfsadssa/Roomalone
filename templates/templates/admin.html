@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <title>Admin Dashboard - Room Alone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+</head>
+<body class="bg-black text-white">
+    <div id="loginGate" class="h-screen flex items-center justify-center">
+        <div class="bg-zinc-900 p-10 rounded-2xl border border-[#C5A059] w-96">
+            <h2 class="text-[#C5A059] text-2xl mb-6 font-bold text-center">دخول الإدارة</h2>
+            <input id="email" class="w-full bg-black border border-gray-700 p-3 mb-4 rounded" placeholder="البريد">
+            <input id="pass" type="password" class="w-full bg-black border border-gray-700 p-3 mb-6 rounded" placeholder="كلمة السر">
+            <button onclick="login()" class="w-full bg-[#C5A059] text-black font-bold py-3 rounded-lg">دخول</button>
+        </div>
+    </div>
+
+    <div id="adminContent" class="hidden p-10">
+        <h1 class="text-3xl text-[#C5A059] mb-10 font-bold">الطلبات الواردة (Real-time)</h1>
+        <div id="ordersList" class="grid gap-4">
+            </div>
+    </div>
+
+    <script>
+        function login() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('pass').value;
+            if(e === "tests@test.test" && p === "test123") {
+                document.getElementById('loginGate').classList.add('hidden');
+                document.getElementById('adminContent').classList.remove('hidden');
+            } else { alert("غلط يا هندسة!"); }
+        }
+
+        const socket = io();
+        socket.on('new_order_to_admin', (data) => {
+            const list = document.getElementById('ordersList');
+            const item = `<div class="bg-zinc-900 p-4 rounded-xl border-r-4 border-[#C5A059] flex justify-between items-center animate__animated animate__bounceIn">
+                <div>
+                    <p class="text-xl font-bold">${data.item}</p>
+                    <p class="text-gray-400">جهاز: ${data.table}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="bg-green-700 px-4 py-2 rounded">تم</button>
+            </div>`;
+            list.innerHTML = item + list.innerHTML;
+            new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play();
+        });
+    </script>
+</body>
+</html>
