@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Alone - Exclusive Lounge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <style>
+        body { background-color: #050505; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .gold-text { color: #C5A059; }
+        .gold-bg { background-color: #C5A059; }
+        .card { background: #111; border: 1px solid rgba(197, 160, 89, 0.2); transition: 0.3s; }
+        .card:hover { border-color: #C5A059; transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+    <nav class="p-6 flex justify-between items-center border-b border-white/5">
+        <h1 class="text-2xl font-bold gold-text tracking-widest">ROOM ALONE</h1>
+        <button class="gold-bg text-black px-4 py-2 rounded-lg font-bold">حجز جهاز</button>
+    </nav>
+
+    <div class="container mx-auto px-4 py-12 text-center">
+        <h2 class="text-5xl font-bold mb-4 animate__animated animate__fadeInDown">استمتع بخصوصيتك</h2>
+        <p class="text-gray-400 mb-12">أفضل تجربة بلايستيشن وكافيه في مكان واحد</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in menu %}
+            <div class="card p-6 rounded-2xl text-right animate__animated animate__zoomIn">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="gold-text font-bold">{{ item.price }} EGP</span>
+                    <h3 class="text-xl font-bold">{{ item.name }}</h3>
+                </div>
+                <button onclick="orderItem('{{ item.name }}')" class="w-full py-2 rounded-lg border border-gold-text gold-text hover:gold-bg hover:text-black transition">طلب الآن</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        function orderItem(name) {
+            const table = prompt("رقم الغرفة أو الجهاز؟");
+            if(table) {
+                socket.emit('place_order', { item: name, table: table });
+                alert("تم إرسال طلبك بنجاح!");
+            }
+        }
+    </script>
+</body>
+</html>
